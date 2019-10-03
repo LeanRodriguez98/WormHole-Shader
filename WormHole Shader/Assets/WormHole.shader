@@ -4,8 +4,10 @@
 	{
 		_MainTex("MainTex",2D) = "white"{}
 		_CenterX("CenterX", float) = -1.0
+		_CenterY("CenterY", float) = -1.0
 		_HoleDistance("HoleDistance", float) = 2.0
-		//_CenterY("CenterY", float) = -1.0
+		_Speed("Speed", float) = 0.5
+		_TextureScale("TextureScale", float) = 0.3
 	}
 	
 	SubShader
@@ -36,8 +38,10 @@
 
 			sampler2D _MainTex;
 			float _CenterX;
-			//float _CenterY;
+			float _CenterY;
 			float _HoleDistance;
+			float _Speed;
+			float _TextureScale;
 			VertexOutput vert(VertexInput v)
 			{
 				VertexOutput o;
@@ -46,27 +50,33 @@
 				return o;
 			}
 
-			fixed4 frag(VertexOutput vertex_output) : SV_Target
+			fixed4 frag(VertexOutput fragment_input) : SV_Target
 			{
 				// normalized coordinates (-1 to 1 vertically)
-				//float2 p = ((_CenterX + 2.0 * vertex_output.uv.x) / 1, (_CenterY + 2.0 * vertex_output.uv.y) / 1);
-				float2 p = ((_CenterX + _HoleDistance * vertex_output.uv) / 1);
+				float2 p = ((_CenterX + _HoleDistance * fragment_input.uv), (_CenterY + _HoleDistance * fragment_input.uv));
+				//float x = _CenterX + _HoleDistance * vertex_output.uv;
+				//float y = _CenterY + _HoleDistance * vertex_output.uv;
+				/*
+				float2 p;
+				p.x =y;
+				p.y = y;
 
+				*/
 				// angle of each pixel to the center of the screen
-				float a = atan2(p.x,p.y);
+				float a = atan2(p.x, p.y);
 
 				// cylindrical tunnel
 				float r = length(p);
 
 				// index tex2D by (animated inverse) radius and angle
-				float2 uv = float2(0.3 / r + 0.2 * _Time.y, a / 3.14);
+				float2 uv = float2(_TextureScale / r + _Speed * _Time.y, a / 3.14);
 
 				float2 uv2 = float2(uv.x, atan2(abs(p.x),abs(p.y)) / 3.14);
 				float3 col = tex2Dgrad(_MainTex, uv, ddx(uv2), ddy(uv2)).xyz;
 
 				// darken at the center    
 				col = col * r;
-
+				col = float3(fragment_input.uv.x, fragment_input.uv.y, 0.0);
 				return float4(col, 1.0);
 			}
 			ENDCG
