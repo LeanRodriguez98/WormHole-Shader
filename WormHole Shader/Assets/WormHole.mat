@@ -24,10 +24,14 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Floats:
-    - _CenterX: 1
-    - _CenterY: -1
+    - _CenterX: -0.01
+    - _CenterY: 0.01
     - _Cosa: 0.37
-    - _HoleDistance: 2
-    - _Speed: 0.3
+    - _Debug: 0
+    - _HoleDistance: 4.7
+    - _Papa: 0.17
+    - _Patata: 0.07
+    - _Pi: 3.1416
+    - _Speed: 1
     - _TextureScale: 0.3
     m_Colors: []
